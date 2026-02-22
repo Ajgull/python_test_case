@@ -1,7 +1,9 @@
 import argparse
+import asyncio
 import sys
 
 import utils
+from asyncc import async_test
 from linear import linear_test
 from parallel import parallel_test
 
@@ -13,7 +15,7 @@ def main():
         "–C/--count number of requests\n"
         "–F/--file name of file to read hosts, each from a new line\n"
         "–O/--output name of file for uploading results\n"
-        "-T/--type of program (l - linear, p - parallel)"
+        "-T/--type of program (l - linear, p - parallel, a - async"
     )
 
     parser.add_argument("-H", "--hosts", required=False, help="Write the host")
@@ -31,6 +33,7 @@ def main():
     parser.add_argument(
         "-O", "--out", type=str, required=False, help="Write name of out_file"
     )
+
     parser.add_argument(
         "-T",
         "--type",
@@ -64,6 +67,10 @@ def main():
         report_text, total_time = linear_test(hosts, count)
     elif args.type == "p":
         report_text, total_time = parallel_test(hosts, count)
+    elif args.type == "a":
+        report_text, total_time = asyncio.run(async_test(hosts, count))
+    else:
+        raise ValueError("Invalid type of running program")
 
     if args.out:
         utils.load_statistics_to_file(args.out, report_text)
