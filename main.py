@@ -3,6 +3,7 @@ import sys
 
 import utils
 from linear import linear_test
+from parallel import parallel_test
 
 
 def main():
@@ -12,7 +13,7 @@ def main():
         "–C/--count number of requests\n"
         "–F/--file name of file to read hosts, each from a new line\n"
         "–O/--output name of file for uploading results\n"
-        "-T/--type of program"
+        "-T/--type of program (l - linear, p - parallel)"
     )
 
     parser.add_argument("-H", "--hosts", required=False, help="Write the host")
@@ -61,6 +62,8 @@ def main():
 
     if args.type == "l":
         report_text, total_time = linear_test(hosts, count)
+    elif args.type == "p":
+        report_text, total_time = parallel_test(hosts, count)
 
     if args.out:
         utils.load_statistics_to_file(args.out, report_text)
